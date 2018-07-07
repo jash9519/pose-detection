@@ -26,6 +26,7 @@ def nw(event):
         root2.destroy()
 
 
+
     elif  event.widget['text']=='Spiderman':
 
         variable.img33 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\iron spider\leftarm.png", -1)
@@ -194,10 +195,26 @@ def nw(event):
         variable.img90 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\thor\rightknee.png", -1)
         variable.img01 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\thor\rightleg.png", -1)
         variable.img1 =  cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\thor\torsoe.png", -1)
+
         root2.destroy()
-
-
-
+    cap = cv2.VideoCapture(0)
+    start_time = time.time()
+    #cv2.namedWindow('img', cv2.WINDOW_NORMAL)
+    while 1:
+        ret, frame = cap.read()
+        cv2.imshow('img', frame)
+        k = cv2.waitKey(10) & 0xff
+        if k == 27:
+            break
+        end_time = time.time()
+        elapsed = end_time - start_time
+        if int(elapsed) > 10:
+            global rat
+            rat=frame
+            cv2.destroyWindow("img")
+            break
+    cap.release()
+    cv2.destroyAllWindows()
 
 #====================VIEW==========================================
 def browseFile(event):
