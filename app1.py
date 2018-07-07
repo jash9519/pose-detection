@@ -1,114 +1,210 @@
 from tkinter import *
 from tkinter.filedialog import askopenfilename
+from tkinter import ttk
 from PIL import Image, ImageTk
 import numpy as np
 import cv2
 import time
-MODE = "MPI"
-m=1
-if MODE is "COCO":
-    protoFile = "pose_deploy_linevec.prototxt"
-    weightsFile = "pose_iter_440000.caffemodel"
-    nPoints = 18
-    POSE_PAIRS = [ [1,0],[1,2],[1,5],[2,3],[3,4],[5,6],[6,7],[1,8],[8,9],[9,10],[1,11],[11,12],[12,13],[0,14],[0,15],[14,16],[15,17]]
-
-elif MODE is "MPI" :
-    protoFile = "pose_deploy_linevec_faster_4_stages.prototxt.txt"
-    weightsFile = "pose_iter_160000.caffemodel"
-    nPoints = 15
-    POSE_PAIRS = [[0,1], [1,2], [2,3], [3,4], [1,5], [5,6], [6,7], [1,14], [14,8], [8,9], [9,10], [14,11], [11,12], [12,13] ]
+import math
+import variable
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++===
 
 #=========================================================new======================================================================
+
 def nw(event):
-    global m
-    cap = cv2.VideoCapture(0)
-    meet=cv2.imread("image_masked.png")
-    face=meet[93:422,276:503]
-    start_time = time.time()
-    cv2.namedWindow('img', cv2.WINDOW_NORMAL)
-    while 1:
-        ret, frame = cap.read()
-        cv2.imshow('img', frame)
-        k = cv2.waitKey(10) & 0xff
-        if k == 27:
-            break
-        end_time = time.time()
-        elapsed = end_time - start_time
-        if int(elapsed) > 10:
-            cv2.imshow('tan', frame)
-            cv2.destroyWindow("img")
-            frameCopy = np.copy(frame)
-            frameWidth = frame.shape[1]
-            t = time.time()
-            frameHeight = frame.shape[0]
-            threshold = 0.1
+    if event.widget['text']=='Captian America':
 
-            net = cv2.dnn.readNetFromCaffe(protoFile, weightsFile)
-
-            # input image dimensions for the network
-            inWidth = 368
-            inHeight = 368
-            inpBlob = cv2.dnn.blobFromImage(frame, 1.0 / 255, (inWidth, inHeight), (0, 0, 0), swapRB=False, crop=False)
-
-            net.setInput(inpBlob)
-
-            output = net.forward()
-            print("time taken by network : {:.3f}".format(time.time() - t))
-
-            H = output.shape[2]
-            W = output.shape[3]
-
-            # Empty list to store the detected keypoints
-            points = []
-
-            for i in range(nPoints):
-                # confidence map of corresponding body's part.
-                probMap = output[0, i, :, :]
-
-                # Find global maxima of the probMap.
-                minVal, prob, minLoc, point = cv2.minMaxLoc(probMap)
-
-                # Scale the point to fit on the original image
-                x = (frameWidth * point[0]) / W
-                y = (frameHeight * point[1]) / H
-
-                if prob > threshold:
-                  if m==1:
-                    new1=x-164.5
-                    new2=y-113.5
-                    frame[int(new2):int(new2)+329, int(new1):int(new1)+227] = face
-                    m=0
-
-                  cv2.circle(frameCopy, (int(x), int(y)), 8, (0, 255, 255), thickness=-1, lineType=cv2.FILLED)
-                  cv2.putText(frameCopy, "{}".format(i), (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255),2,lineType=cv2.LINE_AA)
-
-                    # Add the point to the list if the probability is greater than the threshold
-                  points.append((int(x), int(y)))
-                else:
-                    points.append(None)
-
-            # Draw Skeleton
-            for pair in POSE_PAIRS:
-                partA = pair[0]
-                partB = pair[1]
-
-                if points[partA] and points[partB]:
-                    cv2.line(frame, points[partA], points[partB], (0, 255, 255), 2)
-                    cv2.circle(frame, points[partA], 8, (0, 0, 255), thickness=-1, lineType=cv2.FILLED)
+        variable.img33 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\captianamerica\leftarm.png", -1)
+        variable.img44 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\captianamerica\lefthand.png", -1)
+        variable.img56 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\captianamerica\rightarm.png", -1)
+        variable.img67 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\captianamerica\righthand.png", -1)
+        variable.img78 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\captianamerica\leftknee.png", -1)
+        variable.img89 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\captianamerica\leftleg.png", -1)
+        variable.img90 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\captianamerica\rightknee.png", -1)
+        variable.img01 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\captianamerica\rightleg.png", -1)
+        variable.img1 =  cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\captianamerica\torsoe.png", -1)
+        root2.destroy()
 
 
-            # cv2.imshow('Output-Keypoints', frameCopy)
-            cv2.imshow('Output-Skeleton', frame)
-            cv2.waitKey(0)
-            break
-    cap.release()
-    cv2.destroyAllWindows()
+    elif  event.widget['text']=='Spiderman':
+
+        variable.img33 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\iron spider\leftarm.png", -1)
+        variable.img44 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\iron spider\lefthand.png", -1)
+        variable.img56 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\iron spider\rightarm.png", -1)
+        variable.img67 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\iron spider\righthand.png", -1)
+        variable.img78 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\iron spider\leftknee.png", -1)
+        variable.img89 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\iron spider\leftleg.png", -1)
+        variable.img90 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\iron spider\rightknee.png", -1)
+        variable.img01 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\iron spider\rightleg.png", -1)
+        variable.img1 =  cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\iron spider\torsoe.png", -1)
+        root2.destroy()
+
+
+    elif  event.widget['text']=='Hulk':
+
+         variable.img33 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\hulk\leftarm.png", -1)
+         variable.img44 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\hulk\lefthand.png", -1)
+         variable.img56 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\hulk\rightarm.png", -1)
+         variable.img67 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\hulk\righthand.png", -1)
+         variable.img78 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\hulk\leftknee.png", -1)
+         variable.img89 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\hulk\leftleg.png", -1)
+         variable.img90 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\hulk\rightknee.png", -1)
+         variable.img01 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\hulk\rightleg.png", -1)
+         variable.img1 =  cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\hulk\torsoe.png", -1)
+         root2.destroy()
+
+
+    elif  event.widget['text']=='Batman':
+
+         variable.img33 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\batman\leftarm.png", -1)
+         variable.img44 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\batman\lefthand.png", -1)
+         variable.img56 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\batman\rightarm.png", -1)
+         variable.img67 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\batman\righthand.png", -1)
+         variable.img78 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\batman\leftknee.png", -1)
+         variable.img89 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\batman\leftleg.png", -1)
+         variable.img90 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\batman\rightknee.png", -1)
+         variable.img01 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\batman\rightleg.png", -1)
+         variable.img1 =  cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\batman\torsoe.png", -1)
+         root2.destroy()
+
+
+    elif event.widget['text'] == 'Superman':
+
+        variable.img33 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\superman\leftarm.png", -1)
+        variable.img44 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\superman\lefthand.png", -1)
+        variable.img56 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\superman\rightarm.png", -1)
+        variable.img67 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\superman\righthand.png", -1)
+        variable.img78 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\superman\leftknee.png", -1)
+        variable.img89 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\superman\leftleg.png", -1)
+        variable.img90 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\superman\rightknee.png", -1)
+        variable.img01 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\superman\rightleg.png", -1)
+        variable.img1  = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\superman\torsoe.png", -1)
+        root2.destroy()
+
+
+    elif event.widget['text'] == 'Thanos':
+
+        variable.img33 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\thanos\leftarm.png", -1)
+        variable.img44 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\thanos\lefthand.png", -1)
+        variable.img56 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\thanos\rightarm.png", -1)
+        variable.img67 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\thanos\righthand.png", -1)
+        variable.img78 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\thanos\leftknee.png", -1)
+        variable.img89 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\thanos\leftleg.png", -1)
+        variable.img90 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\thanos\rightknee.png", -1)
+        variable.img01 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\thanos\rightleg.png", -1)
+        variable.img1 =  cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\thanos\torsoe.png", -1)
+        root2.destroy()
+
+
+
+    elif event.widget['text'] == 'Goku':
+
+        variable.img33 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\goku\leftarm.png", -1)
+        variable.img44 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\goku\lefthand.png", -1)
+        variable.img56 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\goku\rightarm.png", -1)
+        variable.img67 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\goku\righthand.png", -1)
+        variable.img78 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\goku\leftknee.png", -1)
+        variable.img89 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\goku\leftleg.png", -1)
+        variable.img90 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\goku\rightknee.png", -1)
+        variable.img01 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\goku\rightleg.png", -1)
+        variable.img1 =  cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\goku\torsoe.png", -1)
+        root2.destroy()
+
+
+    elif event.widget['text'] == 'Vegeta':
+
+        variable.img33 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\vegeta\leftarm.png", -1)
+        variable.img44 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\vegeta\lefthand.png", -1)
+        variable.img56 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\vegeta\rightarm.png", -1)
+        variable.img67 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\vegeta\righthand.png", -1)
+        variable.img78 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\vegeta\leftknee.png", -1)
+        variable.img89 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\vegeta\leftleg.png", -1)
+        variable.img90 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\vegeta\rightknee.png", -1)
+        variable.img01 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\vegeta\rightleg.png", -1)
+        variable.img1 =  cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\vegeta\torsoe.png", -1)
+        root2.destroy()
+
+
+
+    elif event.widget['text'] == 'Black Widow':
+
+        variable.img33 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\blackwidow\leftarm.png", -1)
+        variable.img44 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\blackwidow\lefthand.png", -1)
+        variable.img56 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\blackwidow\rightarm.png", -1)
+        variable.img67 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\blackwidow\righthand.png", -1)
+        variable.img78 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\blackwidow\leftknee.png", -1)
+        variable.img89 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\blackwidow\leftleg.png", -1)
+        variable.img90 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\blackwidow\rightknee.png", -1)
+        variable.img01 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\blackwidow\rightleg.png", -1)
+        variable.img1 =  cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\blackwidow\torsoe.png", -1)
+        root2.destroy()
+
+
+    elif event.widget['text'] == 'Captain Marvel':
+
+        variable.img33 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\captainmarvel\leftarm.png", -1)
+        variable.img44 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\captainmarvel\lefthand.png", -1)
+        variable.img56 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\captainmarvel\rightarm.png", -1)
+        variable.img67 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\captainmarvel\righthand.png", -1)
+        variable.img78 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\captainmarvel\leftknee.png", -1)
+        variable.img89 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\captainmarvel\leftleg.png", -1)
+        variable.img90 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\captainmarvel\rightknee.png", -1)
+        variable.img01 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\captainmarvel\rightleg.png", -1)
+        variable.img1 =  cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\captainmarvel\torsoe.png", -1)
+        root2.destroy()
+
+
+
+    elif event.widget['text'] == 'Kratos':
+
+        variable.img33 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\kratos\leftarm.png", -1)
+        variable.img44 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\kratos\lefthand.png", -1)
+        variable.img56 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\kratos\rightarm.png", -1)
+        variable.img67 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\kratos\righthand.png", -1)
+        variable.img78 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\kratos\leftknee.png", -1)
+        variable.img89 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\kratos\leftleg.png", -1)
+        variable.img90 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\kratos\rightknee.png", -1)
+        variable.img01 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\kratos\rightleg.png", -1)
+        variable.img1 =  cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\kratos\torsoe.png", -1)
+        root2.destroy()
+
+
+    elif event.widget['text'] == 'Ironman':
+
+        variable.img33 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\ironman\leftarm.png", -1)
+        variable.img44 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\ironman\lefthand.png", -1)
+        variable.img56 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\ironman\rightarm.png", -1)
+        variable.img67 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\ironman\righthand.png", -1)
+        variable.img78 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\ironman\leftknee.png", -1)
+        variable.img89 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\ironman\leftleg.png", -1)
+        variable.img90 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\ironman\rightknee.png", -1)
+        variable.img01 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\ironman\rightleg.png", -1)
+        variable.img1 =  cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\ironman\torsoe.png", -1)
+        root2.destroy()
+
+
+    elif event.widget['text'] == 'Thor':
+
+        variable.img33 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\thor\leftarm.png", -1)
+        variable.img44 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\thor\lefthand.png", -1)
+        variable.img56 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\thor\rightarm.png", -1)
+        variable.img67 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\thor\righthand.png", -1)
+        variable.img78 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\thor\leftknee.png", -1)
+        variable.img89 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\thor\leftleg.png", -1)
+        variable.img90 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\thor\rightknee.png", -1)
+        variable.img01 = cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\thor\rightleg.png", -1)
+        variable.img1 =  cv2.imread(r"C:\Users\JASH VYAS\PycharmProjects\untitled1\thor\torsoe.png", -1)
+        root2.destroy()
+
+
+
+
 #====================VIEW==========================================
 def browseFile(event):
     filename = askopenfilename(filetypes=(("Jpeg images","*.jpg"),("PNG images","*.png"),("All Files","*.*")))
     print(filename)
     root1=Toplevel()
-    root1.wm_iconbitmap("meet.ico")
+    root1.wm_iconbitmap("icon.ico")
     lo = Image.open(filename)
     ren = ImageTk.PhotoImage(lo)
     width=ren.width()
@@ -121,10 +217,69 @@ def browseFile(event):
     root1.mainloop()
 
 #================================================================
+def charselect(event):
+    global root2
+    root2=Toplevel()
+    root2.geometry("400x400")
+    ima=cv2.imread('firefox.jpg')
+    b,c=ima.shape[:2]
+    ima=cv2.resize(ima,None,fx=400/c,fy=400/b,interpolation=cv2.INTER_AREA)
+    cv2.imwrite("bk.jpg",ima)
+    load = Image.open("bk.jpg")
+    render = ImageTk.PhotoImage(load)
+
+    # labels can be text or images
+    img = Label(root2, image=render)
+    img.image = render
+    img.place(x=0, y=0)
+    #lab1=Label(root2,text="SELECT CHARACTER....",fg="white", bg="blue")
+    #lab1.place(x=10,y=10)
+    s1=Button(root2,text="Thor",fg="white", bg="black", width=12, height=2,relief='ridge',borderwidth=4)
+    s2=Button(root2,text="Spiderman",fg="black", bg="white", width=12, height=2,relief='ridge',borderwidth=4)
+    s3=Button(root2,text="Ironman",fg="white", bg="black", width=12, height=2,relief='ridge',borderwidth=4)
+    s4=Button(root2,text="Batman",fg="black", bg="white", width=12, height=2,relief='ridge',borderwidth=4)
+    s5=Button(root2,text="Superman",fg="white", bg="black", width=12, height=2,relief='ridge',borderwidth=4)
+    s6=Button(root2,text="Hulk",fg="black", bg="white", width=12, height=2,relief='ridge',borderwidth=4)
+    s7=Button(root2,text="Captian America",fg="white", bg="black", width=12, height=2,relief='ridge',borderwidth=4)
+    s8=Button(root2,text="Black Widow",fg="black", bg="white", width=12, height=2,relief='ridge',borderwidth=4)
+    s9=Button(root2,text="Captian Marvel",fg="white", bg="black", width=12, height=2,relief='ridge',borderwidth=4)
+    s10=Button(root2,text="Goku",fg="black", bg="white", width=12, height=2,relief='ridge',borderwidth=4)
+    s11=Button(root2,text="Vegeta",fg="white", bg="black", width=12, height=2,relief='ridge',borderwidth=4)
+    s12=Button(root2,text="Kratos",fg="black", bg="white", width=12, height=2,relief='ridge',borderwidth=4)
+    s13 = Button(root2, text="Thanos", fg="white", bg="black", width=12, height=2, relief='ridge', borderwidth=4)
+    s1.bind("<Button-1>",nw)
+    s2.bind("<Button-1>", nw)
+    s3.bind("<Button-1>",nw)
+    s4.bind("<Button-1>",nw)
+    s4.bind("<Button-1>",nw)
+    s5.bind("<Button-1>",nw)
+    s6.bind("<Button-1>",nw)
+    s7.bind("<Button-1>",nw)
+    s8.bind("<Button-1>", nw)
+    s9.bind("<Button-1>", nw)
+    s10.bind("<Button-1>", nw)
+    s11.bind("<Button-1>", nw)
+    s12.bind("<Button-1>", nw)
+    s13.bind("<Button-1>",nw)
+    s1.place(x=10,y=20)
+    s2.place(x=150,y=20)
+    s5.place(x=150,y=80)
+    s6.place(x=290,y=80)
+    s3.place(x=290,y=20)
+    s4.place(x=10,y=80)
+    s7.place(x=10,y=140)
+    s8.place(x=150,y=140)
+    s9.place(x=290,y=140)
+    s10.place(x=10,y=200)
+    s11.place(x=150,y=200)
+    s12.place(x=290,y=200)
+    s13.place(x=10,y=260)
+    root2.mainloop()
+
 root = Tk()
 root.title("POSE COPY")
 root.geometry('1600x1000')
-root.wm_iconbitmap("meet.ico")
+root.wm_iconbitmap("icon.ico")
 
 load = Image.open("final.png")
 render = ImageTk.PhotoImage(load)
@@ -135,12 +290,15 @@ img.image = render
 img.place(x=0, y=0)
 
 
-new = Button(root, text="SNAPSHOT", activebackground="green", fg="white", bg="blue", width=15, height=3,relief='ridge',borderwidth=7)
-new.bind("<Button-1>",nw)
-new.place(x=670, y=430)
+#new = Button(root, text="SNAPSHOT", activebackground="green", fg="white", bg="blue", width=15, height=3,relief='ridge',borderwidth=7)
+#new.bind("<Button-1>",nw)
+#new.place(x=670, y=400)
 
-view = Button(root, text="view", fg="white", bg="blue", width=15, height=3,relief='ridge',borderwidth=7)
-view.place(x=670, y=500)
+app=Button(root,text="AVATARS",fg="white", bg="blue", width=15, height=3,relief='ridge',borderwidth=7)
+app.bind("<Button-1>",charselect)
+app.place(x=670,y=400)
+
+view = Button(root, text="View", fg="white", bg="blue", width=15, height=3,relief='ridge',borderwidth=7)
+view.place(x=670, y=530)
 view.bind("<Button-1>",browseFile)
-
 root.mainloop()
